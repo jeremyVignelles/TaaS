@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaaS", "TaaS\TaaS.csproj", "{A50273E7-E219-43CB-97EA-DA5B9FDA27B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A50273E7-E219-43CB-97EA-DA5B9FDA27B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A50273E7-E219-43CB-97EA-DA5B9FDA27B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A50273E7-E219-43CB-97EA-DA5B9FDA27B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A50273E7-E219-43CB-97EA-DA5B9FDA27B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8104AD5-3A69-4680-AF97-9A945EED7B80}
+	EndGlobalSection
+EndGlobal
