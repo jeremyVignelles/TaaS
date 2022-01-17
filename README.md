@@ -1,2 +1,2 @@
 # TaaS
-Timeline as a Service
+Timelapse as a Service

@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+    timelapse:
+        build: TaaS
+        env_file: /data/timelapse/env
+        volumes:
+            - /data/timelapse/data:/data
+        deploy:
+            labels:
+                - "traefik.http.routers.timelapse.rule=Host(`timelapse.cube45.fr`)"
+                - "traefik.http.routers.timelapse.tls.certResolver=default"
+                - "traefik.http.services.timelapse.loadbalancer.server.port=80"
+                - "traefik.enable=true"
+                - "traefik.http.routers.timelapse_http.rule=Host(`timelapse.cube45.fr`)"
+                - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+                - "traefik.http.middlewares.https_redirect.redirectscheme.permanent=true"
+                - "traefik.http.routers.timelapse_http.middlewares=https_redirect"
+networks:
+    default:
+        external: true
+        name: proxy_internal
