@@ -1,0 +1,21 @@
+﻿@model LoginViewModel
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Timelapse as a Service</title>
+</head>
+<body>
+	@using (Html.BeginForm())
+	{
+		@Html.LabelFor(m => m.Username)
+
+		@Html.TextBoxFor(m => m.Username)
+
+		@Html.LabelFor(m => m.Password)
+
+		@Html.PasswordFor(m => m.Password)
+
+		<button type="submit">Envoyer</button>
+	}
+</body>
+</html>
