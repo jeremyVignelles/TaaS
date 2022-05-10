@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Timelapse\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
