@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model Dictionary<Guid, TimelapseInfo>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Timelapse as a Service</title>
@@ -25,7 +26,10 @@
 	</style>
 </head>
 <body>
-<!-- TODO : ici une liste-->
+@foreach (var timelapseKeyValuePair in Model)
+{
+	<a href="/Timelapse/@timelapseKeyValuePair.Key">@timelapseKeyValuePair.Value.Name</a>
+}
 <!-- bouton + -->
 <a class="button" href="/Home/Create">+</a>
 </body>

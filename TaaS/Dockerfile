@@ -18,5 +18,6 @@ RUN dotnet publish "TaaS.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+VOLUME /data
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "TaaS.dll"]

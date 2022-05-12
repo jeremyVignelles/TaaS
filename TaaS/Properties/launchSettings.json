@@ -13,7 +13,11 @@
       "commandName": "Docker",
       "launchBrowser": false,
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "DockerfileRunArguments": "-v taas_data:/data",
+      "environmentVariables": {
+        "DataFolder": "/data"
+      }
     }
   }
 }

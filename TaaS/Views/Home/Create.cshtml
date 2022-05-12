@@ -1,9 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@model TimelapseCreationFormModel
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Timelapse as a Service</title>
-
 </head>
 <body>
+@using (Html.BeginForm())
+{
+	@Html.ValidationSummary()
+	<label asp-for="Name"></label>
+	<input asp-for="Name"/>
+	<button type="submit">Créer</button>
+}
 </body>
 </html>
