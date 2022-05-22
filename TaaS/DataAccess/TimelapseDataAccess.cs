@@ -29,6 +29,22 @@ public class TimelapseDataAccess
         return JsonSerializer.Deserialize<TimelapseInfo>(info)!;
     }
 
+    public async Task UploadTimelapseImage(Guid id, Stream content)
+    {
+        var info = await this.GetTimelapseInfo(id);
+        var newInfo = info with { LastNumber = info.LastNumber + 1 };
+        var fileName = $"{this._dataFolder}/{id}/{newInfo.LastNumber}.png";
+        await using var fileStream = File.Create(fileName);
+        await content.CopyToAsync(fileStream);
+        await File.WriteAllTextAsync($"{this._dataFolder}/{id}/index.json", JsonSerializer.Serialize(newInfo));
+    }
+
+    public Task<Stream> GetTimelapseImage(Guid id, int number)
+    {
+        var fileName = $"{this._dataFolder}/{id}/{number}.png";
+        return Task.FromResult((Stream)File.OpenRead(fileName));
+    }
+
     public Task<Guid[]> GetTimelapses()
     {
         return Task.FromResult(Directory.GetDirectories(this._dataFolder).Select(x => Guid.Parse(Path.GetFileName(x))).ToArray());

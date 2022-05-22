@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model TimelapseViewModel
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Timelapse as a Service</title>
@@ -7,9 +8,9 @@
 			box-sizing: border-box;
 		}
 
-        body {
-            background: black;
-        }
+		body {
+			background: black;
+		}
 
 		body, video, img {
 			position: absolute;
@@ -32,8 +33,15 @@
 <body>
 <video id="video"></video>
 <canvas id="canvas"></canvas>
-<img id="photo"/>
-<script>
+@if(Model.LastNumber == -1)
+{
+	<img id="photo"/>
+}
+else
+{
+	<img id="photo" src="/Timelapse/@(Model.Id)/@(Model.LastNumber).png" />
+}
+	<script>
 	(async function() {
 		const stream = await navigator.mediaDevices.getUserMedia({ video: {
 			facingMode: 'environment'
@@ -53,6 +61,22 @@
 			context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 			var data = canvas.toDataURL('image/png');
 			photo.setAttribute('src', data);
+			canvas.toBlob(async blob => {
+				try {
+					const result = await fetch('/Timelapse/@(Model.Id)', {
+						method: 'POST',
+						body: blob
+					});
+					if (!result.ok) {
+						const responseText = await result.text();
+						alert(`failed : ${result.status} ${responseText}`);
+					} else {
+						alert('success');
+					}
+				} catch (e) {
+					alert(e);
+				}
+			});
 		});
 	})();
 </script>
