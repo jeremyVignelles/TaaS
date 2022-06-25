@@ -3,6 +3,7 @@
 <html>
 <head>
 	<title>Timelapse as a Service</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<style>
 		.button 
 		{
@@ -26,10 +27,12 @@
 	</style>
 </head>
 <body>
+<ul>
 @foreach (var timelapseKeyValuePair in Model)
 {
-	<a href="/Timelapse/@timelapseKeyValuePair.Key">@timelapseKeyValuePair.Value.Name</a>
+	<li><a href="/Timelapse/@timelapseKeyValuePair.Key">@timelapseKeyValuePair.Value.Name</a></li>
 }
+</ul>
 <!-- bouton + -->
 <a class="button" href="/Home/Create">+</a>
 </body>
