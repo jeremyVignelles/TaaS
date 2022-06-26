@@ -45,6 +45,18 @@ public class TimelapseDataAccess
         return Task.FromResult((Stream)File.OpenRead(fileName));
     }
 
+    public async Task<TimelapseImagesViewModel> GetTimelapseImages(Guid id)
+    {
+        var timelapse = await this.GetTimelapseInfo(id);
+        var images = new List<TimelapseImage>();
+        for (var i = 0; i <= timelapse.LastNumber; i++)
+        {
+            var creationTime = new FileInfo($"{this._dataFolder}/{id}/{i}.png").CreationTime;
+            images.Add(new TimelapseImage(i, creationTime));
+        }
+        return new TimelapseImagesViewModel(id, timelapse.Name, images.ToArray());
+    }
+
     public Task<Guid[]> GetTimelapses()
     {
         return Task.FromResult(Directory.GetDirectories(this._dataFolder).Select(x => Guid.Parse(Path.GetFileName(x))).ToArray());

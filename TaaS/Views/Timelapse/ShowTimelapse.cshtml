@@ -1,85 +1,139 @@
-﻿@model TimelapseViewModel
+﻿@model TimelapseImagesViewModel
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Timelapse as a Service</title>
+	<title>@Model.Name - Timelapse as a Service</title>
 	<style>
 		* {
 			box-sizing: border-box;
 		}
-
 		body {
-			background: black;
+			padding: 0;
+			margin: 0;
 		}
-
-		body, video, img {
+		.frame {
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			margin: 0;
-			padding: 0;
-		}
-
-		canvas {
-			display: none;
-		}
-
-		#photo {
-			opacity: 0.5;
 			object-fit: contain;
 		}
+
+		.seekbar-container {
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 50px;
+			display: flex;
+		}
+
+		.action-button {
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+			background: white;
+			border: solid 1px black;
+			border-radius: 50%;
+			padding: 0;
+			margin: 5px;
+			text-decoration: none;
+			text-align: center;
+			display: inline-block;
+			font-size: 1em;
+			color: inherit;
+		}
+
+		#seekbar {
+			flex: 1;
+			height: 100%;
+			background-color: #555;
+			position: relative;
+		}
+
+		#seekbar .seekbar-frame, #seekbar #cursor {
+			position: absolute;
+			height: 100%;
+			transform: translateX(-50%);
+		}
+
+		#seekbar .seekbar-frame {
+			width: 1px;
+			border: solid 1px white;
+		}
+
+		#seekbar #cursor {
+			border: solid 5px transparent;
+			border-block-color: #CC0;
+		}
+
+		#photo-button {
+			position: absolute;
+			bottom: 5px;
+			right: 5px;
+		}
 	</style>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 </head>
 <body>
-<video id="video"></video>
-<canvas id="canvas"></canvas>
-@if(Model.LastNumber == -1)
-{
-	<img id="photo"/>
-}
-else
-{
-	<img id="photo" src="/Timelapse/@(Model.Id)/@(Model.LastNumber).png" />
-}
-	<script>
-	(async function() {
-		const stream = await navigator.mediaDevices.getUserMedia({ video: {
-			facingMode: 'environment'
-		} });
-		const video = document.getElementById('video');
-		video.srcObject = stream;
-		video.play();
-
-		const canvas = document.getElementById('canvas');
-		const photo = document.getElementById('photo');
-		photo.addEventListener('click', () => {
-			var context = canvas.getContext('2d');
-			canvas.width = video.videoWidth;
-			canvas.height = video.videoHeight;
-			context.fillStyle = "#000";
-			context.fillRect(0, 0, canvas.width, canvas.height);
-			context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-			var data = canvas.toDataURL('image/png');
-			photo.setAttribute('src', data);
-			canvas.toBlob(async blob => {
-				try {
-					const result = await fetch('/Timelapse/@(Model.Id)', {
-						method: 'POST',
-						body: blob
-					});
-					if (!result.ok) {
-						const responseText = await result.text();
-						alert(`failed : ${result.status} ${responseText}`);
-					} else {
-						alert('success');
-					}
-				} catch (e) {
-					alert(e);
+	@foreach(var frame in Model.Frames) {
+		<img id="frame-@(frame.Number)" class="frame" style="display:none" src="/Timelapse/@(Model.Id)/@(frame.Number).png" />
+	}
+	<div class="seekbar-container">
+		<a href="/" class="action-button">🏠</a>
+		<button class="action-button" id="previous">⏮</button>
+		<div id="seekbar">
+			@if(Model.Frames.Length > 0) {
+				var seekbarDuration = Model.Frames.Last().DateTime - Model.Frames.First().DateTime;
+				foreach(var frame in Model.Frames) {
+					var position = ((frame.DateTime - Model.Frames.First().DateTime) / seekbarDuration) * 100 + "%";
+					<div class="seekbar-frame" style="left: @position"></div>
 				}
-			});
-		});
-	})();
+			}
+			<div id="cursor" style="left: 100%"></div>
+		</div>
+		<button class="action-button" id="next">⏭</button>
+		<button class="action-button" id="delete">🚮</button>
+	</div>
+	<a href="/Timelapse/@(Model.Id)/Record" class="action-button" id="photo-button">📷</a>
+<script>
+const frames = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Frames));
+let currentFrame = undefined;
+if (frames.length > 0) {
+	currentFrame = frames.length - 1;
+	document.getElementById('frame-' + frames[currentFrame].Number).style.display = 'block';
+}
+
+document.getElementById('previous').addEventListener('click', () => {
+	if (currentFrame > 0) {
+		document.getElementById('frame-' + frames[currentFrame].Number).style.display = 'none';
+		currentFrame--;
+		document.getElementById('frame-' + frames[currentFrame].Number).style.display = 'block';
+		refreshCursor();
+	}
+});
+
+document.getElementById('next').addEventListener('click', () => {
+	if (currentFrame < frames.length - 1) {
+		document.getElementById('frame-' + frames[currentFrame].Number).style.display = 'none';
+		currentFrame++;
+		document.getElementById('frame-' + frames[currentFrame].Number).style.display = 'block';
+		refreshCursor();
+	}
+});
+
+document.getElementById('delete').addEventListener('click', () => {
+	if (frames.length > 0) {
+		alert('TODO: Delete');
+	}
+});
+
+function refreshCursor() {
+	var firstDate = new Date(frames[0].DateTime);
+	var lastDate = new Date(frames[frames.length - 1].DateTime);
+	var duration = lastDate - firstDate;
+	var currentDate = new Date(frames[currentFrame].DateTime);
+	var currentPosition = ((currentDate - firstDate) / duration) * 100 + "%";
+	document.getElementById('cursor').style.left = currentPosition;
+}
 </script>
 </body>
 </html>

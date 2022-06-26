@@ -11,6 +11,13 @@ public class TimelapseController : Controller
     [HttpGet("/Timelapse/{id}")]
     public async Task<IActionResult> ShowTimelapse(Guid id, [FromServices] TimelapseDataAccess timelapseDataAccess)
     {
+        var timelapseImages = await timelapseDataAccess.GetTimelapseImages(id);
+        return View(timelapseImages);
+    }
+
+    [HttpGet("/Timelapse/{id}/Record")]
+    public async Task<IActionResult> RecordTimelapse(Guid id, [FromServices] TimelapseDataAccess timelapseDataAccess)
+    {
         var timelapse = await timelapseDataAccess.GetTimelapseInfo(id);
         return View(new TimelapseViewModel(id, timelapse.Name, timelapse.LastNumber));
     }
@@ -27,7 +34,7 @@ public class TimelapseController : Controller
         return File(image, "image/png");
     }
 
-    [HttpPost("/Timelapse/{id}")]
+    [HttpPost("/Timelapse/{id}/Record")]
     public async Task UploadTimelapseImage(Guid id, [FromServices] TimelapseDataAccess timelapseDataAccess)
     {
         await timelapseDataAccess.UploadTimelapseImage(id, Request.Body);
