@@ -57,8 +57,23 @@ public class TimelapseDataAccess
         return new TimelapseImagesViewModel(id, timelapse.Name, images.ToArray());
     }
 
-    public Task<Guid[]> GetTimelapses()
+	public Task<Guid[]> GetTimelapses()
     {
         return Task.FromResult(Directory.GetDirectories(this._dataFolder).Select(x => Guid.Parse(Path.GetFileName(x))).ToArray());
+    }
+
+    public async Task DeleteTimelapseImage(Guid id, int number)
+    {
+        var info = await this.GetTimelapseInfo(id);
+        var fileName = $"{this._dataFolder}/{id}/{number}.png";
+        File.Move(fileName, fileName + ".old");
+        for (var i = number + 1; i <= info.LastNumber; i++)
+        {
+            var oldName = $"{this._dataFolder}/{id}/{i}.png";
+            var newName = $"{this._dataFolder}/{id}/{i-1}.png";
+            File.Move(oldName, newName);
+        }
+        File.Delete(fileName + ".old");
+        await File.WriteAllTextAsync($"{this._dataFolder}/{id}/index.json", JsonSerializer.Serialize(info with { LastNumber = info.LastNumber - 1 }));
     }
 }

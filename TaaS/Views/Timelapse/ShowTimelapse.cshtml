@@ -120,9 +120,17 @@ document.getElementById('next').addEventListener('click', () => {
 	}
 });
 
-document.getElementById('delete').addEventListener('click', () => {
+document.getElementById('delete').addEventListener('click', async () => {
 	if (frames.length > 0) {
-		alert('TODO: Delete');
+		const result = await fetch('/Timelapse/@(Model.Id)/' + currentFrame + '.png', {
+			method: 'DELETE'
+		});
+		if (!result.ok) {
+			const responseText = await result.text();
+			alert(`failed : ${result.status} ${responseText}`);
+		} else {
+			window.location.reload();
+		}
 	}
 });
 

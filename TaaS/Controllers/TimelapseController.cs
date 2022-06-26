@@ -39,4 +39,10 @@ public class TimelapseController : Controller
     {
         await timelapseDataAccess.UploadTimelapseImage(id, Request.Body);
     }
+
+    [HttpDelete("/Timelapse/{id}/{number}.png")]
+    public async Task DeleteTimelapseImage(Guid id, int number, [FromServices] TimelapseDataAccess timelapseDataAccess)
+    {
+        await timelapseDataAccess.DeleteTimelapseImage(id, number);
+    }
 }
