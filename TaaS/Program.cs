@@ -5,7 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(cookieOptions =>
+    {
+        cookieOptions.SlidingExpiration = true;
+        cookieOptions.ExpireTimeSpan = TimeSpan.FromDays(31);
+        cookieOptions.Cookie.IsEssential = true;
+        cookieOptions.Cookie.MaxAge = TimeSpan.FromDays(31);
+    });
 builder.Services.AddSingleton<TimelapseDataAccess>();
 
 
