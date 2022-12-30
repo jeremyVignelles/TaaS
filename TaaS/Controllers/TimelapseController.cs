@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using TaaS.DataAccess;
 using TaaS.Models;
 
@@ -31,7 +32,8 @@ public class TimelapseController : Controller
             return NotFound();
         }
         var image = await timelapseDataAccess.GetTimelapseImage(id, number);
-        return File(image, "image/png");
+        var etagValue = $"\"{image.LastModified:O}\"";
+        return File(image.Stream, "image/png", new DateTimeOffset(image.LastModified), new EntityTagHeaderValue(etagValue));
     }
 
     [HttpPost("/Timelapse/{id}/Record")]

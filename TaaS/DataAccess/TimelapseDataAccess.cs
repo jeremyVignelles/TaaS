@@ -39,10 +39,11 @@ public class TimelapseDataAccess
         await File.WriteAllTextAsync($"{this._dataFolder}/{id}/index.json", JsonSerializer.Serialize(newInfo));
     }
 
-    public Task<Stream> GetTimelapseImage(Guid id, int number)
+    public Task<(Stream Stream, DateTime LastModified)> GetTimelapseImage(Guid id, int number)
     {
         var fileName = $"{this._dataFolder}/{id}/{number}.png";
-        return Task.FromResult((Stream)File.OpenRead(fileName));
+        var fileInfo = new FileInfo(fileName);
+        return Task.FromResult(((Stream)fileInfo.OpenRead(), fileInfo.LastWriteTime));
     }
 
     public async Task<TimelapseImagesViewModel> GetTimelapseImages(Guid id)
