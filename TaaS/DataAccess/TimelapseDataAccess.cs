@@ -8,7 +8,7 @@ public class TimelapseDataAccess
     private readonly string _dataFolder;
     public TimelapseDataAccess(IConfiguration configuration)
     {
-        this._dataFolder = configuration.GetValue<string>("DataFolder");
+        this._dataFolder = configuration.GetValue<string>("DataFolder") ?? throw new InvalidOperationException("DataFolder configuration is required.");
         if (!Directory.Exists(_dataFolder))
         {
             Directory.CreateDirectory(_dataFolder);

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["nuget", "dockerfile", "docker-compose", "github-actions"],
+  "packageRules": [
+    {
+      "matchManagers": ["nuget"],
+      "matchPackageNames": ["Microsoft.VisualStudio.Azure.Containers.Tools.Targets"],
+      "groupName": "nuget packages"
+    }
+  ]
+}
