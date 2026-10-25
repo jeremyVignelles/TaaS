@@ -8,10 +8,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["TaaS/TaaS.csproj", "TaaS/"]
-RUN dotnet restore "TaaS/TaaS.csproj"
+COPY ["TaaS.csproj", "./"]
+RUN dotnet restore "TaaS.csproj"
 COPY . .
-WORKDIR "/src/TaaS"
 RUN dotnet build "TaaS.csproj" -c Release -o /app/build
 
 FROM build AS publish
